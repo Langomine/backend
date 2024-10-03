@@ -1,0 +1,31 @@
+name: langomine-backend
+
+services:
+  app:
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    networks:
+      - internal
+
+  openai-whisper:
+    ports:
+      - 9000:9000
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+    image: onerahmet/openai-whisper-asr-webservice:v1.5.0
+    volumes:
+      - openapi-whisper-cache:/root/.cache/whisper
+    networks:
+      - internal
+
+
+
+networks:
+  internal:
+
+volumes:
+  openapi-whisper-cache:
