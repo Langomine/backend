@@ -72,14 +72,3 @@ class VoiceView(ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Voice.DoesNotExist:
             raise Http404
-
-
-
-
-# @swagger_auto_schema(
-#     method='post',
-#     request_body=VoiceSerializer,
-#     tags=['Voice'],
-#     responses={200: openapi.Response('response description', VoiceSerializer)}
-# )
-#@action(detail=True, methods=['post'], parser_classes=(MultiPartParser, FileUploadParser))

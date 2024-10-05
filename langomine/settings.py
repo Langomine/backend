@@ -149,3 +149,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+OPEN_AI_WHISPERER_HOST=os.getenv("OPEN_AI_WHISPERER_HOST")
