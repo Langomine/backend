@@ -13,7 +13,7 @@ from rest_framework.viewsets import ViewSet
 
 from langomine.settings import OPEN_AI_WHISPERER_HOST
 from .models import Voice
-from .serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer
+from .serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer, VoiceShowSerializer
 from rest_framework.decorators import action
 from django.utils import timezone
 
@@ -36,7 +36,7 @@ class VoiceView(ViewSet):
     def show(self, request, uuid):
         try:
             voice = Voice.objects.filter(deleted_at__isnull=True).get(pk=uuid)
-            serializer = VoiceSerializer(voice)
+            serializer = VoiceShowSerializer(voice)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Voice.DoesNotExist:
             raise Http404

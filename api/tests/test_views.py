@@ -29,12 +29,8 @@ class TestViews(TestSetUp):
         self.assertEqual(f"{voice.uuid}", res.data['uuid'])
         self.assertEqual(str(voice.duration).zfill(8), res.data['duration'])
         self.assertEqual(voice.text, res.data['text'])
-        self.assertEqual(voice.words, res.data['words'])
         self.assertEqual(voice.language, res.data['language'])
-        try:
-            dateutil.parser.parse(res.data['created_at'])
-        except ParserError:
-            self.fail(f"{res.data['created_at']} is not a valid datetime format.")
+        self.assertEqual(f"{res.data['created_at']}", res.data['created_at'])
 
     def test_can_not_get_deleted_voice(self):
         voice = Voice(

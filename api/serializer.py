@@ -11,5 +11,10 @@ class VoiceCreatedSerializer(serializers.ModelSerializer):
         model = Voice
         fields = ['uuid']
 
+class VoiceShowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voice
+        fields = ['uuid', 'duration', 'text', 'file', 'language', 'created_at']
+
 class VoiceUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
