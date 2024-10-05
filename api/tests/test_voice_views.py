@@ -13,10 +13,10 @@ from django.utils import timezone
 from langomine.settings import OPEN_AI_WHISPERER_HOST
 
 
-class TestViews(TestSetUp):
+class TestVoiceViews(TestSetUp):
     def test_can_get_voice(self):
         voice = Voice(
-            duration=datetime.timedelta(seconds=30),
+            duration_s=30,
             file=File(open(Path(__file__).absolute().parent / "assets/hi-there.mp3", mode="rb")),
         )
 
@@ -27,14 +27,14 @@ class TestViews(TestSetUp):
         self.assertEqual(200, res.status_code)
 
         self.assertEqual(f"{voice.uuid}", res.data['uuid'])
-        self.assertEqual(str(voice.duration).zfill(8), res.data['duration'])
+        self.assertEqual(30, res.data['duration_s'])
         self.assertEqual(voice.text, res.data['text'])
         self.assertEqual(voice.language, res.data['language'])
         self.assertEqual(f"{res.data['created_at']}", res.data['created_at'])
 
     def test_can_not_get_deleted_voice(self):
         voice = Voice(
-            duration=datetime.timedelta(seconds=30),
+            duration_s=30,
             file=None,
             deleted_at=timezone.now(),
         )
@@ -71,7 +71,7 @@ class TestViews(TestSetUp):
 
     def test_can_delete_voice(self):
         voice = Voice(
-            duration=datetime.timedelta(seconds=30),
+            duration_s=30,
             file=File(open(Path(__file__).absolute().parent / "assets/hi-there.mp3", mode="rb")),
         )
 

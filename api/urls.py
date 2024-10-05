@@ -1,9 +1,12 @@
 from django.urls import path, re_path
 
-from .views import VoiceView
+from .views.voices import VoiceView
+from .views.stats import StatView
 
 urlpatterns = [
-    # path('stats', index, name='stats'),
+    path('stats/', StatView.as_view({
+        'get': 'show'
+    })),
 
     path('voices/', VoiceView.as_view({
         'post': 'store'

@@ -12,17 +12,13 @@ from rest_framework import status, views
 from rest_framework.viewsets import ViewSet
 
 from langomine.settings import OPEN_AI_WHISPERER_HOST
-from .models import Voice
-from .serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer, VoiceShowSerializer
+from api.models import Voice
+from api.serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer, VoiceShowSerializer
 from rest_framework.decorators import action
 from django.utils import timezone
 
 class VoiceView(ViewSet):
     parser_classes = [MultiPartParser, FormParser, FileUploadParser]
-
-    """
-    Retrieve, update or delete a voice instance.
-    """
 
     @swagger_auto_schema(
         method='get',
@@ -63,7 +59,7 @@ class VoiceView(ViewSet):
         ).json()
 
         voice = Voice(
-            duration=datetime.timedelta(seconds=whisper['segments'][0]['end']) - datetime.timedelta(seconds=whisper['segments'][0]['start']),
+            duration_s=(datetime.timedelta(seconds=whisper['segments'][0]['end']) - datetime.timedelta(seconds=whisper['segments'][0]['start'])).seconds,
             file=request.FILES['file'],
             language=whisper['language'],
             text=whisper['text'],

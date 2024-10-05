@@ -11,7 +11,7 @@ def generate_uuid4_filename(instance, filename):
 
 class Voice(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    duration = models.DurationField()
+    duration_s = models.IntegerField(default=0)
     file = models.FileField(upload_to=generate_uuid4_filename, null=True)
     language = models.CharField(max_length=50, null=True)
     text = models.TextField(null=True)

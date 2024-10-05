@@ -14,7 +14,11 @@ class VoiceCreatedSerializer(serializers.ModelSerializer):
 class VoiceShowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Voice
-        fields = ['uuid', 'duration', 'text', 'file', 'language', 'created_at']
+        fields = ['uuid', 'duration_s', 'text', 'file', 'language', 'created_at']
 
 class VoiceUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
+
+class MainStatsSerializer(serializers.Serializer):
+    # total_count = serializers.IntegerField()
+    total_duration_s = serializers.IntegerField()
