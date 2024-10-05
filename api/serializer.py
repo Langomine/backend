@@ -6,5 +6,10 @@ class VoiceSerializer(serializers.ModelSerializer):
         model = Voice
         fields = '__all__'
 
+class VoiceCreatedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voice
+        fields = ['uuid']
+
 class VoiceUploadSerializer(serializers.Serializer):
     file = serializers.FileField()

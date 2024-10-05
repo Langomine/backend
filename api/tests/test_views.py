@@ -21,7 +21,16 @@ class TestViews(TestSetUp):
         res = self.client.get(path=f"/api/voices/{voice.uuid}/", content_type='application/json')
 
         self.assertEqual(200, res.status_code)
-        self.assertValidVoiceResponse(res.data, voice)
+
+        self.assertEqual(f"{voice.uuid}", res.data['uuid'])
+        self.assertEqual(str(voice.duration).zfill(8), res.data['duration'])
+        self.assertEqual(voice.text, res.data['text'])
+        self.assertEqual(voice.words, res.data['words'])
+        self.assertEqual(voice.language, res.data['language'])
+        try:
+            dateutil.parser.parse(res.data['created_at'])
+        except ParserError:
+            self.fail(f"{res.data['created_at']} is not a valid datetime format.")
 
     def test_can_not_get_deleted_voice(self):
         voice = Voice(
@@ -46,7 +55,7 @@ class TestViews(TestSetUp):
         voice = Voice.objects.first()
 
         self.assertEqual(201, res.status_code)
-        self.assertValidVoiceResponse(res.data, voice)
+        self.assertEqual(f"{voice.uuid}", res.data['uuid'])
 
     def test_can_delete_voice(self):
         voice = Voice(
@@ -64,11 +73,5 @@ class TestViews(TestSetUp):
 
         self.assertFalse(bool(voice.file))
         self.assertIsNotNone(voice.deleted_at)
-
-    def assertValidVoiceResponse(self, data, voice: Voice):
-        self.assertEqual(f"{voice.uuid}", data['uuid'])
-        self.assertEqual(str(voice.duration).zfill(8), data['duration'])
-        try:
-            dateutil.parser.parse(data['created_at'])
-        except ParserError:
-            self.fail(f"{data['created_at']} is not a valid datetime format.")
+        self.assertIsNone(voice.text)
+        self.assertIsNone(voice.words)

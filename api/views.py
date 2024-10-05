@@ -1,5 +1,6 @@
 import datetime
 
+import requests
 from django.http import Http404
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -10,8 +11,9 @@ from rest_framework.response import Response
 from rest_framework import status, views
 from rest_framework.viewsets import ViewSet
 
+from langomine.settings import OPEN_AI_WHISPERER_HOST
 from .models import Voice
-from .serializer import VoiceSerializer, VoiceUploadSerializer
+from .serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer
 from rest_framework.decorators import action
 from django.utils import timezone
 
@@ -47,12 +49,28 @@ class VoiceView(ViewSet):
     )
     @action(methods=['post'], detail=True)
     def store(self, request, format=None):
+        whisper = requests.post(
+            url=OPEN_AI_WHISPERER_HOST + '/asr',
+            params={
+                "encode": "true",
+                "task": "transcribe",
+                "word_timestamps": "true",
+                "output": "json"
+            },
+            files={
+                "audio_file": request.FILES['file']
+            },
+        ).json()
+
         voice = Voice(
-            duration=datetime.timedelta(seconds=30),
+            duration=datetime.timedelta(seconds=whisper['segments'][0]['end']) - datetime.timedelta(seconds=whisper['segments'][0]['start']),
             file=request.FILES['file'],
+            language=whisper['language'],
+            text=whisper['text'],
+            words=whisper['segments'][0]['words'],
         )
         voice.save()
-        return Response(VoiceSerializer(voice).data, status=status.HTTP_201_CREATED)
+        return Response(VoiceCreatedSerializer(voice).data, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
         method='delete',
