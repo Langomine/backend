@@ -14,3 +14,4 @@ class Voice(models.Model):
     duration = models.DurationField()
     file = models.FileField(upload_to=generate_uuid4_filename, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    deleted_at = models.DateTimeField(default=None, null=True)
