@@ -2,6 +2,7 @@ import datetime
 
 import requests
 from django.http import Http404
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
@@ -13,35 +14,33 @@ from rest_framework.viewsets import ViewSet
 
 from langomine.settings import OPEN_AI_WHISPERER_HOST
 from api.models import Voice
-from api.serializer import VoiceSerializer, VoiceUploadSerializer, VoiceCreatedSerializer, VoiceShowSerializer
+from api.serializer import VoiceSerializer, VoiceUploadSerializer, ProcessedVoiceSerializer
 from rest_framework.decorators import action
 from django.utils import timezone
 
 class VoiceView(ViewSet):
     parser_classes = [MultiPartParser, FormParser, FileUploadParser]
 
-    @swagger_auto_schema(
-        method='get',
+    @extend_schema(
         tags=['Voice'],
         responses={
-            200: VoiceSerializer,
-            404: 'Voice not found',
+            200: ProcessedVoiceSerializer,
+            404: OpenApiResponse(description='Not found')
         }
     )
     @action(methods=['get'], detail=True)
     def show(self, request, uuid):
         try:
             voice = Voice.objects.filter(deleted_at__isnull=True).get(pk=uuid)
-            serializer = VoiceShowSerializer(voice)
+            serializer = ProcessedVoiceSerializer(voice)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Voice.DoesNotExist:
             raise Http404
 
-    @swagger_auto_schema(
-        method='post',
-        request_body=VoiceUploadSerializer,
+    @extend_schema(
+        request=VoiceUploadSerializer,
         tags=['Voice'],
-        responses={200: openapi.Response('response description', VoiceSerializer)}
+        responses={200: ProcessedVoiceSerializer}
     )
     @action(methods=['post'], detail=True)
     def store(self, request, format=None):
@@ -66,14 +65,13 @@ class VoiceView(ViewSet):
             words=whisper['segments'][0]['words'],
         )
         voice.save()
-        return Response(VoiceCreatedSerializer(voice).data, status=status.HTTP_201_CREATED)
+        return Response(ProcessedVoiceSerializer(voice).data, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
-        method='delete',
+    @extend_schema(
         tags=['Voice'],
         responses={
-            204: openapi.Response("No content"),
-            404: 'Voice not found'
+            204: OpenApiResponse(description='Item deleted'),
+            404: OpenApiResponse(description='Not found')
         }
     )
     @action(methods=['delete'], detail=True)

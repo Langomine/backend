@@ -18,3 +18,7 @@ class Voice(models.Model):
     words = models.JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(default=None, null=True)
+
+class Question(models.Model):
+    id = models.AutoField(primary_key=True)
+    text = models.TextField()

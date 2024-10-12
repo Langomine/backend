@@ -3,6 +3,24 @@ info:
   title: ''
   version: 0.0.0
 paths:
+  /api/questions/:
+    get:
+      operationId: questions_list
+      tags:
+      - Question
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+          description: ''
   /api/schema/:
     get:
       operationId: schema_retrieve
@@ -153,26 +171,46 @@ paths:
     get:
       operationId: stats_retrieve
       tags:
-      - stats
+      - Stats
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MainStats'
+          description: ''
   /api/voices/:
     post:
       operationId: voices_create
       tags:
-      - voices
+      - Voice
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VoiceUpload'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VoiceUpload'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/VoiceUpload'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedVoice'
+          description: ''
   /api/voices/{uuid}/:
     get:
       operationId: voices_retrieve
@@ -184,14 +222,20 @@ paths:
           format: uuid
         required: true
       tags:
-      - voices
+      - Voice
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedVoice'
+          description: ''
+        '404':
+          description: Not found
     delete:
       operationId: voices_destroy
       parameters:
@@ -202,15 +246,74 @@ paths:
           format: uuid
         required: true
       tags:
-      - voices
+      - Voice
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '204':
-          description: No response body
+          description: Item deleted
+        '404':
+          description: Not found
 components:
+  schemas:
+    MainStats:
+      type: object
+      properties:
+        total_duration_s:
+          type: integer
+      required:
+      - total_duration_s
+    ProcessedVoice:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        duration_s:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        text:
+          type: string
+          nullable: true
+        file:
+          type: string
+          format: uri
+          nullable: true
+        language:
+          type: string
+          nullable: true
+          maxLength: 50
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - uuid
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        text:
+          type: string
+      required:
+      - id
+      - text
+    VoiceUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: uri
+      required:
+      - file
   securitySchemes:
     basicAuth:
       type: http
