@@ -45,9 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'drf_yasg',
+    'drf_spectacular',
     'api'
 ]
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,6 +65,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'langomine.urls'
+
+# SWAGGER_SETTINGS = {
+#    'DEFAULT_INFO': 'api.urls.api_info',
+# }
 
 TEMPLATES = [
     {
