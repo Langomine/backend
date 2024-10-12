@@ -1,6 +1,7 @@
 from django.urls import path, re_path
 from drf_yasg import openapi
 
+from .views.questions import QuestionView
 from .views.voices import VoiceView
 from .views.stats import StatView
 
@@ -12,6 +13,10 @@ api_info = openapi.Info(
 urlpatterns = [
     path('stats/', StatView.as_view({
         'get': 'show'
+    })),
+
+    path('questions/', QuestionView.as_view({
+        'get': 'index'
     })),
 
     path('voices/', VoiceView.as_view({
