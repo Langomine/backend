@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
@@ -31,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '0.0.0.0',
-    'localhost'
+    'localhost',
 ]
 
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'rest_framework',
     'drf_spectacular',
     'api'
@@ -54,7 +56,13 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+CORS_ALLOWED_ORIGINS = [
+    os.getenv("CORS_ALLOWED_ORIGIN")
+]
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -160,3 +168,7 @@ STORAGES = {
 }
 
 OPEN_AI_WHISPERER_HOST=os.getenv("OPEN_AI_WHISPERER_HOST")
+
+SPECTACULAR_SETTINGS = {
+    'COMPONENT_SPLIT_REQUEST': True
+}

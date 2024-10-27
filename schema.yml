@@ -192,13 +192,13 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/VoiceUpload'
+              $ref: '#/components/schemas/VoiceUploadRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/VoiceUpload'
+              $ref: '#/components/schemas/VoiceUploadRequest'
           '*/*':
             schema:
-              $ref: '#/components/schemas/VoiceUpload'
+              $ref: '#/components/schemas/VoiceUploadRequest'
         required: true
       security:
       - cookieAuth: []
@@ -306,12 +306,12 @@ components:
       required:
       - id
       - text
-    VoiceUpload:
+    VoiceUploadRequest:
       type: object
       properties:
         file:
           type: string
-          format: uri
+          format: binary
       required:
       - file
   securitySchemes:

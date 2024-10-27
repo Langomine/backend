@@ -11,21 +11,32 @@ services:
       - internal
 
   openai-whisper:
+    image: onerahmet/openai-whisper-asr-webservice:v1.5.0
     ports:
-      - 9000:9000
+      - "9000:9000"
     environment:
       - ASR_MODEL=base
       - ASR_ENGINE=openai_whisper
-    image: onerahmet/openai-whisper-asr-webservice:v1.5.0
     volumes:
       - openapi-whisper-cache:/root/.cache/whisper
     networks:
       - internal
 
-
+  ollama:
+    image: ollama/ollama:0.3.14
+    ports:
+      - "11434:11434"
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - internal
 
 networks:
   internal:
 
 volumes:
   openapi-whisper-cache:
+  ollama-data:
