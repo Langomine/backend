@@ -16,8 +16,11 @@ class Voice(models.Model):
     language = models.CharField(max_length=50, null=True)
     text = models.TextField(null=True)
     words = models.JSONField(null=True)
+    analysed = models.JSONField(null=True)
+    request_country = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(default=None, null=True)
+
 
 class Question(models.Model):
     id = models.AutoField(primary_key=True)

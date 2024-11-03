@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status, views
 from rest_framework.viewsets import ViewSet
 
+from api.services.llm_analyser import LlmAnalyser
 from langomine.settings import OPEN_AI_WHISPERER_HOST
 from api.models import Voice
 from api.serializer import VoiceSerializer, VoiceUploadSerializer, ProcessedVoiceSerializer
@@ -57,12 +58,23 @@ class VoiceView(ViewSet):
             },
         ).json()
 
+        country = request.headers.get('CF-IPCountry', '')
+
+        analyser = LlmAnalyser(
+            voice_content=whisper['segments'][0],
+            country_code=country
+        )
+
+        analysed = analyser.analyze()
+
         voice = Voice(
             duration_s=(datetime.timedelta(seconds=whisper['segments'][0]['end']) - datetime.timedelta(seconds=whisper['segments'][0]['start'])).seconds,
             file=request.FILES['file'],
             language=whisper['language'],
             text=whisper['text'],
-            words=whisper['segments'][0]['words'],
+            words=whisper['segments'][0],
+            request_country=country,
+            analysed=analysed
         )
         voice.save()
         return Response(ProcessedVoiceSerializer(voice).data, status=status.HTTP_201_CREATED)
