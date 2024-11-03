@@ -160,6 +160,7 @@ STORAGES = {
           "access_key": os.getenv("AWS_ACCESS_KEY_ID"),
           "secret_key": os.getenv("AWS_SECRET_ACCESS_KEY"),
           "endpoint_url": os.getenv("AWS_ENDPOINT_URL"),
+          "signature_version": "s3v4",
         },
     },
     "staticfiles": {

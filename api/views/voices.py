@@ -72,7 +72,7 @@ class VoiceView(ViewSet):
             file=request.FILES['file'],
             language=whisper['language'],
             text=whisper['text'],
-            words=whisper['segments'][0],
+            words=whisper['segments'][0]['words'],
             request_country=country,
             analysed=analysed
         )

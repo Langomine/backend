@@ -258,6 +258,80 @@ paths:
           description: Not found
 components:
   schemas:
+    Analysed:
+      type: object
+      properties:
+        fluency_and_coherence:
+          $ref: '#/components/schemas/FluencyAndCoherence'
+        lexical_resource:
+          $ref: '#/components/schemas/LexicalResource'
+        grammatical_range_and_accuracy:
+          $ref: '#/components/schemas/GrammaticalRange'
+        pronunciation:
+          $ref: '#/components/schemas/Pronunciation'
+        overall_assessment:
+          $ref: '#/components/schemas/OverallAssessment'
+      required:
+      - fluency_and_coherence
+      - grammatical_range_and_accuracy
+      - lexical_resource
+      - overall_assessment
+      - pronunciation
+    FluencyAndCoherence:
+      type: object
+      properties:
+        band_score:
+          type: number
+          format: double
+          maximum: 9
+          minimum: 1
+        strengths:
+          type: array
+          items:
+            type: string
+        areas_for_improvement:
+          type: array
+          items:
+            type: string
+        detailed_feedback:
+          type: string
+      required:
+      - areas_for_improvement
+      - band_score
+      - detailed_feedback
+      - strengths
+    GrammaticalRange:
+      type: object
+      properties:
+        band_score:
+          type: number
+          format: double
+          maximum: 9
+          minimum: 1
+        structure_analysis:
+          $ref: '#/components/schemas/StructureAnalysis'
+        detailed_feedback:
+          type: string
+      required:
+      - band_score
+      - detailed_feedback
+      - structure_analysis
+    LexicalResource:
+      type: object
+      properties:
+        band_score:
+          type: number
+          format: double
+          maximum: 9
+          minimum: 1
+        vocabulary_analysis:
+          $ref: '#/components/schemas/VocabularyAnalysis'
+        detailed_feedback:
+          type: string
+      required:
+      - band_score
+      - detailed_feedback
+      - vocabulary_analysis
     MainStats:
       type: object
       properties:
@@ -265,6 +339,49 @@ components:
           type: integer
       required:
       - total_duration_s
+    OverallAssessment:
+      type: object
+      properties:
+        band_score:
+          type: number
+          format: double
+          maximum: 9
+          minimum: 1
+        key_strengths:
+          type: array
+          items:
+            type: string
+        priority_improvements:
+          type: array
+          items:
+            type: string
+        summary:
+          type: string
+      required:
+      - band_score
+      - key_strengths
+      - priority_improvements
+      - summary
+    PhoneticAnalysis:
+      type: object
+      properties:
+        clarity_score:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+        problem_sounds:
+          type: array
+          items:
+            type: string
+        intonation_patterns:
+          type: array
+          items:
+            type: string
+      required:
+      - clarity_score
+      - intonation_patterns
+      - problem_sounds
     ProcessedVoice:
       type: object
       properties:
@@ -292,9 +409,28 @@ components:
           type: string
           format: date-time
           readOnly: true
+        analysed:
+          $ref: '#/components/schemas/Analysed'
       required:
+      - analysed
       - created_at
       - uuid
+    Pronunciation:
+      type: object
+      properties:
+        band_score:
+          type: number
+          format: double
+          maximum: 9
+          minimum: 1
+        phonetic_analysis:
+          $ref: '#/components/schemas/PhoneticAnalysis'
+        detailed_feedback:
+          type: string
+      required:
+      - band_score
+      - detailed_feedback
+      - phonetic_analysis
     Question:
       type: object
       properties:
@@ -306,6 +442,39 @@ components:
       required:
       - id
       - text
+    StructureAnalysis:
+      type: object
+      properties:
+        complex_structures:
+          type: array
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - complex_structures
+      - errors
+    VocabularyAnalysis:
+      type: object
+      properties:
+        sophisticated_terms:
+          type: array
+          items:
+            type: string
+        collocations:
+          type: array
+          items:
+            type: string
+        idiomatic_expressions:
+          type: array
+          items:
+            type: string
+      required:
+      - collocations
+      - idiomatic_expressions
+      - sophisticated_terms
     VoiceUploadRequest:
       type: object
       properties:
